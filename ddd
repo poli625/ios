@@ -1,0 +1,271 @@
+import UIKit
+
+// String text = "Hello"
+
+let myText = "Hello, playground hello abc"
+//myText = "Jan Kowalski"
+//myText
+
+var number1: Int
+number1 = 9
+//number1 = nil
+
+var floatNumber = 10.5
+
+if number1 > 10 {
+    print("Liczba większa od 10")
+} else if number1 > 0 {
+    print("Liczba większa od 0")
+} else {
+    print("Liczba mniejsza od 0")
+}
+
+switch number1 {
+case 0...9:
+    print("To jest cyfra")
+default:
+    print("To jest liczba")
+}
+
+let message = number1 < 10 && number1 >= 0 ? "To jest cyfra" : "To jest liczba"
+
+// for(int i = 0; i < 10; i++)
+
+//for index in 0...9 {
+//    print("Wartość \(index)")
+//}
+
+func createMessage() -> String {
+    return "hello"
+}
+
+func show(message: String, numberOfTimes: Int) {
+    guard numberOfTimes > 0 else {
+        print("numberOfTimes must be > 0")
+        return
+    }
+    
+    for _ in 0..<numberOfTimes {
+        print(message)
+    }
+}
+
+//0..<10
+//0...9
+
+let message1 = createMessage()
+show(message: message1, numberOfTimes: 6)
+
+// ---- Optionals unwrapping ----
+
+print("\n\n")
+
+func optionalsUnwrappingTest() {
+    var firstName: String? = "Adam"
+
+    // 1. if let
+    if let nonEmptyName = firstName {
+        print("if: \(nonEmptyName)")
+
+    } else {
+        print("if: Brak imienia")
+    }
+
+    // 2. guard let
+    guard let newName = firstName else {
+        print("guard: Brak imienia")
+        return
+    }
+
+    print("guard: \(newName)")
+    
+    // 3. force unwrapping - nie korzystamy z tego poza wyjątkowymi sytuacjami
+    print("force unwrapping: \(firstName!)")
+}
+
+optionalsUnwrappingTest()
+
+// ---- Tuples ----
+
+func createSomething() -> (Int, Int) {
+    return (5, 10)
+}
+
+let something = createSomething()
+something.1
+something.0
+
+let (x, y) = createSomething()
+x
+y
+
+// ---- Closures ----
+
+func doSomething(completion: @escaping (Int, String) -> Void) {
+    DispatchQueue.global().async {
+        for _ in 0..<1000 {
+            print("SOMETHING")
+        }
+        
+        completion(1000, "SOMETHING PRESENTED")
+    }
+}
+
+let completionParameter: (Int, String) -> Void = { (value, text) in
+    print("DONE: \(value), \(text)")
+}
+
+//doSomething(completion: completionParameter)
+
+print("Started doing something.")
+
+// ---- Class ----
+
+// TestFunnyClass - Pascal case (nazwa: klasy, struktury, protocol, pliku, katalogu w drzewie projektu)
+// testFunnyMethod - Camel case (nazwa: funkcji, atrybutu klasy, zmiennej/stałej)
+
+class IPhone {
+    var brandName: String
+    var modelName: String
+    var screenSize: Float
+    
+    init(brandName: String,
+         modelName: String,
+         screenSize: Float) {
+        self.brandName = brandName
+        self.modelName = modelName
+        self.screenSize = screenSize
+    }
+    
+    init(screenSize: Float) {
+        self.brandName = "Apple"
+        self.modelName = "Unknown"
+        self.screenSize = screenSize
+    }
+    
+    deinit {
+        print("Deinit in IPhone class")
+    }
+    
+    func presentYourself() {
+        print("My name is \(brandName) \(modelName) and screen size \(screenSize)")
+    }
+    
+//    Java
+//
+//    IPhone(brandName: String,
+//         modelName: String,
+//         screenSize: Float) {
+//        this.brandName = brandName
+//        this.modelName = modelName
+//        this.screenSize = screenSize
+//    }
+}
+
+let iPhoneX = IPhone(brandName: "Apple", modelName: "X", screenSize: 5.8)
+let unknownIPhone = IPhone(screenSize: 4.7)
+
+unknownIPhone
+
+iPhoneX.presentYourself()
+
+unknownIPhone.presentYourself()
+
+// ---- Structure ----
+
+struct AndroidPhone {
+    var brandName: String
+    var modelName: String
+    var screenSize: Float
+    
+    func presentYourself() {
+        print("My name is \(brandName) \(modelName) and screen size \(screenSize)")
+    }
+}
+
+let samsungGalaxyS20 = AndroidPhone(brandName: "Samsung", modelName: "S20", screenSize: 6.2)
+samsungGalaxyS20
+
+samsungGalaxyS20.presentYourself()
+
+
+// ---- Structure vs Class ----
+
+// Structure
+
+var androidPhone1 = AndroidPhone(brandName: "Android", modelName: "1", screenSize: 6.0)
+
+var androidPhone2 = androidPhone1
+
+androidPhone1
+
+androidPhone2
+
+androidPhone2.brandName = "Something else"
+
+androidPhone2
+androidPhone1
+
+// Class
+var iPhone1 = IPhone(brandName: "IPhone", modelName: "1", screenSize: 4.7)
+
+var iPhone2 = iPhone1
+
+iPhone1
+
+iPhone2
+
+iPhone2.brandName = "Samsung"
+
+iPhone2
+
+iPhone1
+
+// ---- Enum ----
+
+enum SmartphoneBrand {
+    case apple
+    case samsung
+    case huawei
+    case motorola
+    
+    func presentYourself() {
+        switch self {
+        case .apple:
+            print("This is Apple")
+        case .samsung:
+            print("This is Samsung")
+        case .huawei:
+            print("This is Huawei")
+        default:
+            print("Some other brand")
+        }
+    }
+}
+
+let brand = SmartphoneBrand.motorola
+brand.presentYourself()
+
+// ---- Error handling ----
+
+enum CalculationError: Error, LocalizedError {
+    case divideByZero
+    
+    var errorDescription: String? {
+        return "Cannot divide by 0"
+    }
+}
+
+func divide(a: Float, b: Float) throws -> Float {
+    guard b != 0 else {
+        throw CalculationError.divideByZero
+    }
+    
+    return a / b
+}
+
+do {
+   try divide(a: 10, b: 0)
+} catch {
+    print("Error occurred: \(error.localizedDescription)")
+}
